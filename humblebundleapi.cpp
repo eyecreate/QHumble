@@ -13,8 +13,8 @@
 
 namespace URLS {
 
-const QString apiBaseUrl         = "https://www.humblebundle.com/api/v1/";
-const QString loginUrl           = "https://www.humblebundle.com/login";
+const QString apiBaseUrl         = "https://hr-humblebundle.appspot.com/api/v1/";
+const QString loginUrl           = "https://hr-humblebundle.appspot.com/processlogin";
 const QString orderListUrl       = apiBaseUrl + "user/order"           ;
 const QString orderUrl           = apiBaseUrl + "order/%1"             ; // %1 is the order_id
 const QString claimedEntitiesUrl = apiBaseUrl + "user/claimed/entities";
@@ -84,6 +84,7 @@ void HumbleBundleAPI::login()
 	request.setRawHeader("Accept-Charset", "utf-8");
 	request.setRawHeader("Keep-Alive",     "true");
 	request.setRawHeader("content-type",   "application/x-www-form-urlencoded");
+    request.setRawHeader("X-Requested-By",  "hb_android_app");
 
 	networkAccessManager_->post(request, queryUrl.toString(QUrl::FullyEncoded).toUtf8());
 }

@@ -28,6 +28,13 @@ ApplicationWindow {
 
         PageCaptcha {
             id: pageCaptcha
+            onReCaptchaEntered: {
+                pageCaptcha.visible = false;
+                pageLogin.recaptcha_challenge = challenge;
+                pageLogin.recaptcha_response = response;
+                pageLogin.captchaFound();
+            }
+
             anchors.fill: parent
         }
 

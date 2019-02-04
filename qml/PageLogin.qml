@@ -7,8 +7,9 @@ Rectangle {
     height: 62
 
     property bool loading: false
-    readonly property string __loginUrl: "https://www.humblebundle.com/login";
-    readonly property string __captchaUrl: "https://www.humblebundle.com/login/captcha";
+    property string recaptcha_challenge: ""
+    property string recaptcha_response: ""
+    readonly property string __loginUrl: "https://hr-humblebundle.appspot.com/processlogin";
 
     function login(username, password, captchaRequired) {
         pageLoginRect.loading = true;
@@ -22,16 +23,21 @@ Rectangle {
         if (!captchaRequired) {
             xhr.open("POST", __loginUrl, true);
         } else {
-            postData += '&recaptcha_challenge_field' + recaptcha_challenge +
-                        '&recaptcha_response_field' + recaptcha_response;
-            xhr.open("POST", __captchaUrl, true);
+            postData += '&recaptcha_challenge_field=' + recaptcha_challenge +
+                        '&recaptcha_response_field=' + recaptcha_response;
+            xhr.open("POST", __loginUrl, true);
+        }
+
+        if(twoFactorInput.length > 0) {
+            postData += '&code=' + twoFactorInput.text;
         }
 
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.setRequestHeader("Content-length", postData.length)
+        xhr.setRequestHeader("Content-length", postData.length);
+        xhr.setRequestHeader("X-Requested-By","hb_android_app");
 
         xhr.onreadystatechange = function() {
-            console.log("Foo" + xhr.responseText)
+            console.log("Response -> " + xhr.responseText)
 
             if (xhr.readyState == xhr.DONE) {
                 if (xhr.status == 200) {
@@ -63,6 +69,10 @@ Rectangle {
         xhr.send(postData);
     }
 
+    function captchaFound() {
+        login(loginInput.text, passwordInput.text, true);
+    }
+
     Grid {
         id: grid
         y: 20
@@ -90,6 +100,14 @@ Rectangle {
             echoMode: TextInput.Password
 
             text: Settings.getPassword()
+        }
+
+        Label {
+            text: qsTr("2-Factor Code:")
+        }
+        TextField {
+            id: twoFactorInput
+            width: 250
         }
     }
 

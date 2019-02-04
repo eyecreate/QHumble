@@ -5,7 +5,7 @@ Rectangle {
     width: 100
     height: 62
 
-    readonly property string __orderListUrl: "https://www.humblebundle.com/api/v1/user/order";
+    readonly property string __orderListUrl: "https://hr-humblebundle.appspot.com/api/v1/user/order";
     property bool loading: false
 
     function reloadBundles() {
@@ -16,7 +16,8 @@ Rectangle {
         xhr.open("GET", __orderListUrl, true);
 
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.setRequestHeader("Content-length", data.length)
+        xhr.setRequestHeader("Content-length", data.length);
+        xhr.setRequestHeader("X-Requested-By","hb_android_app");
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState == xhr.DONE) {

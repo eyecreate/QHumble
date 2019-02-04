@@ -1,5 +1,7 @@
-var Android = new Object;
-Android.setCaptchaResponse = function(challenge, response) {
-    var string = challenge + "|" + response;
-    navigator.qt.postMessage(string);
+window.Android = {
+     setCaptchaResponse: function(challenge, response) {
+        var string = "qhumble" + "|" + challenge + "|" + response;
+        console.info(string);
+    }
 }
+
