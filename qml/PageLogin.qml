@@ -6,71 +6,44 @@ Rectangle {
     width: 100
     height: 62
 
+    Connections {
+        target: HumbleApi
+        onLoginSucceeded: {
+            pageLoginRect.loading = false;
+            errorText.visible = false;
+            mainViewManger.currentIndex = 2;
+        }
+        onLoginError: {
+            mainViewManger.currentIndex = 0;
+            errorText.visible = true;
+            errorText.text = error;
+        }
+    }
+
+    Component.onCompleted: {
+        if(HumbleApi.isLoggedIn()){
+            mainViewManger.currentIndex = 2;
+        }
+    }
+
     property bool loading: false
     property string recaptcha_challenge: ""
     property string recaptcha_response: ""
-    readonly property string __loginUrl: "https://hr-humblebundle.appspot.com/processlogin";
 
-    function login(username, password, captchaRequired) {
+    function login(username, password, captchaResponse) {
         pageLoginRect.loading = true;
         errorText.visible = false;
 
-        var encodedUsername = encodeURIComponent(username);
-        var encodedPassword = encodeURIComponent(password);
-        var postData = "ajax=true" + "&username=" + encodedUsername + "&password=" + encodedPassword;
-
-        var xhr = new XMLHttpRequest();
-        if (!captchaRequired) {
-            xhr.open("POST", __loginUrl, true);
-        } else {
-            postData += '&recaptcha_challenge_field=' + recaptcha_challenge +
-                        '&recaptcha_response_field=' + recaptcha_response;
-            xhr.open("POST", __loginUrl, true);
+        if(twoFactorInput.length == 0) {
+            HumbleApi.setCredentials(username, password,"", captchaResponse);
         }
-
-        if(twoFactorInput.length > 0) {
-            postData += '&code=' + twoFactorInput.text;
+        else {
+            HumbleApi.setCredentials(username, password, twoFactorInput.text, captchaResponse);
         }
-
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.setRequestHeader("Content-length", postData.length);
-        xhr.setRequestHeader("X-Requested-By","hb_android_app");
-
-        xhr.onreadystatechange = function() {
-            console.log("Response -> " + xhr.responseText)
-
-            if (xhr.readyState == xhr.DONE) {
-                if (xhr.status == 200) {
-                    console.log("logged in");
-                    pageBundles.visible = true;
-                    pageBundles.reloadBundles();
-                    if (storeCredentialsCheck.checked) {
-                        Settings.setUsername(username);
-                        Settings.setPassword(password);
-                    }
-                } else if (xhr.status == 0) {
-                    console.log("Error: ", xhr.status, xhr.statusText);
-                    // this typically happens if no internet connection is there at all
-                }
-            } else if (xhr.status == 401) {
-                console.log("Could not log in, bad credentials?");
-                console.log(xhr.responseText)
-                if (xhr.responseText != "") {
-                    var errors = JSON.parse(xhr.responseText);
-                    if (errors["captcha_required"]) {
-                        pageCaptcha.visible = true
-                    }
-                }
-            } else if (xhr.status != 200) {
-                console.log("Error: ", xhr.status)
-            }
-            pageLoginRect.loading = false;
-        }
-        xhr.send(postData);
     }
 
     function captchaFound() {
-        login(loginInput.text, passwordInput.text, true);
+        login(loginInput.text, passwordInput.text, recaptcha_response);
     }
 
     Grid {
@@ -125,7 +98,7 @@ Rectangle {
         text: qsTr("Login")
         anchors.right: grid.right
         anchors.top: storeCredentialsCheck.bottom
-        onClicked: login(loginInput.text, passwordInput.text, false)
+        onClicked: mainViewManger.currentIndex = 1
     }
 
     Rectangle {

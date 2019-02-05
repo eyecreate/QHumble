@@ -41,3 +41,13 @@ void Settings::setPassword(const QString & password)
 {
 	writeEntry("password", password);
 }
+
+QString Settings::getSessionToken()
+{
+    return readEntry("token","").toString();
+}
+
+void Settings::setSessionToken(const QString & token)
+{
+    writeEntry("token", token);
+}

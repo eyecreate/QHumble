@@ -10,14 +10,11 @@ int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 
-//	HumbleBundleAPI hbApi;
-//	while (!hbApi.isLoggedIn()) {
-//		app.processEvents();
-//	}
-//	hbApi.updateOrderList();
+    Settings settings;
+    HumbleBundleAPI hbApi;
 
-	Settings settings;
 	QQmlApplicationEngine engine;
+    engine.rootContext()->setContextProperty("HumbleApi", &hbApi);
 
 	engine.rootContext()->setContextProperty("Settings", &settings);
 

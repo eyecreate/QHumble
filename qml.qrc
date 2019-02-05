@@ -5,8 +5,6 @@
         <file>qml/LoadingImageItem.qml</file>
         <file>qml/assets/images/loading.png</file>
         <file>qml/PageLogin.qml</file>
-        <file>qml/SimpleViewManager.qml</file>
-        <file>qml/assets/js/SimpleViewManager.js</file>
         <file>qml/PageBundles.qml</file>
         <file>qml/assets/js/CaptchaInjection.js</file>
         <file>qml/Scrollbar.qml</file>

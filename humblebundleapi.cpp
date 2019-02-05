@@ -1,6 +1,8 @@
 #include "humblebundleapi.h"
 
 #include <QNetworkAccessManager>
+#include <QNetworkCookieJar>
+#include <QNetworkCookie>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrlQuery>
@@ -8,6 +10,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <settings.h>
 
 #include <QDebug>
 
@@ -28,12 +31,18 @@ HumbleBundleAPI::HumbleBundleAPI()
       isLoggedIn_(false)
 {
 	connect(networkAccessManager_, &QNetworkAccessManager::finished, this, &HumbleBundleAPI::onFinished);
+    if(Settings::getSessionToken().size() > 0) {
+        isLoggedIn_ = true;
+        networkAccessManager_->cookieJar()->insertCookie(QNetworkCookie("_simpleauth_sess",Settings::getSessionToken().toLatin1()));
+    }
 }
 
-void HumbleBundleAPI::setCredentials(const QString & login, const QString & password)
+void HumbleBundleAPI::setCredentials(const QString & login, const QString & password, const QString & twoFactor = "", const QString & reCaptchaResponse = "")
 {
 	username_ = login;
 	password_ = password;
+    twoFactor_ = twoFactor;
+    reCaptcha_ = reCaptchaResponse;
 
 	this->login();
 }
@@ -50,6 +59,7 @@ void HumbleBundleAPI::updateOrderList()
 	request.setRawHeader("Accept",         "application/json");
 	request.setRawHeader("Accept-Charset", "utf-8");
 	request.setRawHeader("Keep-Alive",     "true");
+    request.setRawHeader("X-Requested-By",  "hb_android_app");
 
 	networkAccessManager_->get(request);
 }
@@ -66,6 +76,7 @@ void HumbleBundleAPI::updateOrder(const QString & orderId)
 	request.setRawHeader("Accept",         "application/json");
 	request.setRawHeader("Accept-Charset", "utf-8");
 	request.setRawHeader("Keep-Alive",     "true");
+    request.setRawHeader("X-Requested-By",  "hb_android_app");
 
 	networkAccessManager_->get(request);
 }
@@ -77,6 +88,11 @@ void HumbleBundleAPI::login()
 
 	queryUrl.addQueryItem("username", username_);
 	queryUrl.addQueryItem("password", password_);
+    if(twoFactor_.size() > 0) {
+        queryUrl.addQueryItem("code", twoFactor_);
+    }
+    queryUrl.addQueryItem("recaptcha_response_field", reCaptcha_);
+    queryUrl.addQueryItem("recaptcha_challenge_field","");
 
 	QNetworkRequest request;
 	request.setUrl(QUrl(URLS::loginUrl));
@@ -154,12 +170,20 @@ void HumbleBundleAPI::onFinished(QNetworkReply * reply)
 
 	if (reply->error() != QNetworkReply::NoError) {
 		if (loggedInReply) isLoggedIn_ = false;
+        emit loginError(reply->url().toString() +"error(" + reply->error() +"): " + reply->errorString() + "content: " + reply->readAll());
 		qDebug() << reply->url() << "error(" << reply->error() <<"): " << reply->errorString() << "content: " << reply->readAll();
 		return;
 	}
 
 	if (loggedInReply) {
 		isLoggedIn_ = true;
+        //Find session token
+        for (const QNetworkCookie & cookie:networkAccessManager_->cookieJar()->cookiesForUrl(requestUrl)) {
+            if(cookie.name() == "_simpleauth_sess") {
+                    Settings::setSessionToken(cookie.value());
+            }
+        }
+        emit loginSucceeded();
 	} else if (orderListReply) {
 		QList<HumbleOrder> orders = parseOrderList(reply->readAll());
 		foreach(const HumbleOrder & order, orders) {
