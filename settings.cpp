@@ -22,26 +22,6 @@ Settings::Settings(QObject *parent)
 {
 }
 
-QString Settings::getUsername()
-{
-	return readEntry("username", "").toString();
-}
-
-void Settings::setUsername(const QString & username)
-{
-	writeEntry("username", username);
-}
-
-QString Settings::getPassword()
-{
-	return readEntry("password", "").toString();
-}
-
-void Settings::setPassword(const QString & password)
-{
-	writeEntry("password", password);
-}
-
 QString Settings::getSessionToken()
 {
     return readEntry("token","").toString();

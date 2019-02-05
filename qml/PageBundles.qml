@@ -5,58 +5,23 @@ Rectangle {
     width: 100
     height: 62
 
-    readonly property string __orderListUrl: "https://hr-humblebundle.appspot.com/api/v1/user/order";
-    property bool loading: false
-
-    function reloadBundles() {
-        pageBundlesRect.loading = true;
-        var data = "ajax=true";
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", __orderListUrl, true);
-
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.setRequestHeader("Content-length", data.length);
-        xhr.setRequestHeader("X-Requested-By","hb_android_app");
-
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == xhr.DONE) {
-                if (xhr.status == 200) {
-                    parseBundles(JSON.parse(xhr.responseText));
-                } else if (xhr.status == 0) {
-                    console.log("Error: ", xhr.status, xhr.statusText);
-                    // this typically happens if no internet connection is there at all
-                }
-            }  else if (xhr.status == 401) {
-                console.log("need to relogin");
-                pageLogin.visible = true;
-            } else if (xhr.status != 200) {
-                console.log("Error: ", xhr.status)
-            }
-            pageBundlesRect.loading = false;
+    Connections {
+        target: HumbleApi
+        onOrderListUpdated: {
+            pagesBundlesRect.loading = false;
         }
-        xhr.send(data);
     }
 
-    function parseBundles(json) {
-        var sortArray = []
-        for(var i = 0; i < json.length; ++i) {
-            var element = json[i];
-            if (element["product"]["category"] == "bundle") {
-                sortArray.push({
-                                   "human_name"   : element["product"]["human_name"],
-                                   "machine_name" : element["product"]["machine_name"]
-                               })
-            }
+    Component.onCompleted: {
+        if(HumbleApi.isLoggedIn()){
+            startUpdate();
         }
+    }
+    property bool loading: false
 
-        sortArray.sort(function (lhs, rhs) {
-            return lhs["human_name"] <= rhs["human_name"] ? -1 :1;
-        });
-
-        for (var i = 0; i < sortArray.length; ++i) {
-            bundlesListModel.append(sortArray[i]);
-        }
+    function startUpdate() {
+        pageBundlesRect.loading = true;
+        HumbleApi.updateOrderList();
     }
 
     Component {

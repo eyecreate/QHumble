@@ -12,6 +12,7 @@ Rectangle {
             pageLoginRect.loading = false;
             errorText.visible = false;
             mainViewManger.currentIndex = 2;
+            pageBundles.startUpdate();
         }
         onLoginError: {
             mainViewManger.currentIndex = 0;
@@ -60,8 +61,6 @@ Rectangle {
         TextField {
             id: loginInput
             width: 350
-
-            text: Settings.getUsername()
         }
 
         Label {
@@ -71,8 +70,6 @@ Rectangle {
             id: passwordInput
             width: 350
             echoMode: TextInput.Password
-
-            text: Settings.getPassword()
         }
 
         Label {
@@ -84,20 +81,12 @@ Rectangle {
         }
     }
 
-    CheckBox {
-        id: storeCredentialsCheck
-        text: qsTr("Store Credentials")
-        anchors.right: grid.right
-        anchors.top: grid.bottom
-        checked: true
-    }
-
     Button {
         id: loginButton
         enabled: loginInput.text != "" && passwordInput.text != ""
         text: qsTr("Login")
         anchors.right: grid.right
-        anchors.top: storeCredentialsCheck.bottom
+        anchors.top: grid.bottom
         onClicked: mainViewManger.currentIndex = 1
     }
 

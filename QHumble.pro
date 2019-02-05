@@ -1,10 +1,17 @@
 TEMPLATE = app
 
-QT += qml quick widgets
+include(Nut/nut.pri)
+
+QT += qml quick widgets sql
 
 SOURCES += main.cpp \
     humblebundleapi.cpp \
-    settings.cpp
+    settings.cpp \
+    humbledb.cpp \
+    db/purchase.cpp \
+    db/product.cpp \
+    db/download.cpp \
+    db/file.cpp
 
 RESOURCES += qml.qrc
 
@@ -22,4 +29,12 @@ include(deployment.pri)
 
 HEADERS += \
     humblebundleapi.h \
-    settings.h
+    settings.h \
+    humbledb.h \
+    db/purchase.h \
+    db/product.h \
+    db/download.h \
+    db/file.h
+
+DISTFILES += \
+    LICENSE.txt

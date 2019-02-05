@@ -17,10 +17,6 @@ class Settings : public QObject, public SettingsBase
 public:
 	Settings(QObject * parent = 0);
 
-	Q_INVOKABLE static QString getUsername();
-	Q_INVOKABLE static void setUsername(const QString & username);
-	Q_INVOKABLE static QString getPassword();
-	Q_INVOKABLE static void setPassword(const QString & password);
     Q_INVOKABLE static QString getSessionToken();
     Q_INVOKABLE static void setSessionToken(const QString & token);
 };

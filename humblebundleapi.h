@@ -1,67 +1,10 @@
 #pragma once
 
 #include <QObject>
+#include "humbledb.h"
 
 class QNetworkAccessManager;
 class QNetworkReply;
-
-class HumbleDownload
-{
-public:
-	QString machine_name;
-	QString platform;
-	QString url;
-
-	QString toString() const {
-		return
-		        "machine_name: " + machine_name + "\n" +
-		        "platform:     " + platform     + "\n" +
-		        "url:          " + url          + "\n"
-		        ;
-	}
-};
-
-class HumbleProduct
-{
-public:
-	QString human_name;
-	QString machine_name;
-	QString iconUrl;
-
-	QList<HumbleDownload> downloads;
-
-	QString toString() const {
-		QString retval =
-		        "human_name:   " + human_name   + "\n" +
-		        "machine_name: " + machine_name + "\n" +
-		        "iconUrl:      " + iconUrl      + "\n"
-		        ;
-		foreach(const HumbleDownload & download, downloads) {
-			retval += "download: " + download.toString();
-		}
-
-		return retval;
-	}
-};
-
-class HumbleOrder
-{
-public:
-	HumbleOrder() : isBundle(false) {}
-
-	QString toString () const {
-		return
-		        "isBundle: "   + QString::number((int) isBundle) + "\n" +
-		        "human_name: " + human_name                      + "\n" +
-		        "orderId: "    + orderId                         + "\n"
-		        ;
-	}
-
-public:
-	bool isBundle;
-	QString human_name;
-	QString orderId;
-};
 
 class HumbleBundleAPI : public QObject
 {
@@ -88,8 +31,10 @@ private slots:
 private:
 	void login();
 
-	QList<HumbleOrder> parseOrderList(const QByteArray & json);
-	QList<HumbleProduct> parseProductList(const QByteArray & json);
+    void parseOrderList(const QByteArray & json);
+    void parseProductList(const QByteArray & json);
+
+    HumbleDB db;
 
 private:
 	QString username_;
