@@ -9,6 +9,7 @@
 #include "db/download.h"
 #include "db/file.h"
 #include <QList>
+#include "db/customquerymodel.h"
 
 class HumbleDB : public QObject
 {
@@ -21,15 +22,16 @@ public:
     void addProduct(Product product);
     void addDownload(Download download);
     void addFile(File file);
-    Purchase getPurchase(int id);
+    /*Purchase getPurchase(int id);
     Product getProduct(int id);
     Download getDownload(int id);
-    File getFile(int id);
+    File getFile(int id);*/
     int getPurchaseCount();
-    QList<Purchase> getAllPurchases();
+    QSqlQueryModel *getPurchaseModel();
+    /*QList<Purchase> getAllPurchases();
     QList<Product> getProductsForPurchase(int id);
     QList<Download> getDownloadsForProduct(int id);
-    QList<File> getFilesForDownload(int id);
+    QList<File> getFilesForDownload(int id);*/
 
 signals:
     void dbCleared();
@@ -37,6 +39,7 @@ signals:
 public slots:
 
 private:
+    CustomQueryModel purchaseModel;
 };
 
 #endif // HUMBLEDB_H

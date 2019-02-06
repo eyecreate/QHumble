@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include "humbledb.h"
+#include <QSqlQueryModel>
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -19,6 +20,7 @@ public:
     Q_INVOKABLE bool isRefreshNeeded();
 
     Q_INVOKABLE void updateOrder(const QString & orderId);
+    QSqlQueryModel *purchaseModel();
 
 signals:
 	void orderListUpdated();

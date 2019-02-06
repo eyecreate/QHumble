@@ -9,7 +9,8 @@ SOURCES += main.cpp \
     db/purchase.cpp \
     db/product.cpp \
     db/download.cpp \
-    db/file.cpp
+    db/file.cpp \
+    db/customquerymodel.cpp
 
 RESOURCES += qml.qrc
 
@@ -32,7 +33,8 @@ HEADERS += \
     db/purchase.h \
     db/product.h \
     db/download.h \
-    db/file.h
+    db/file.h \
+    db/customquerymodel.h
 
 DISTFILES += \
     LICENSE.txt

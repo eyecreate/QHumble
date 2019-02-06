@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
 
 	QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("HumbleApi", &hbApi);
+    engine.rootContext()->setContextProperty("purchaseModel",hbApi.purchaseModel());
 
 	engine.rootContext()->setContextProperty("Settings", &settings);
 

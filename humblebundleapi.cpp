@@ -93,7 +93,12 @@ void HumbleBundleAPI::updateOrder(const QString & orderId)
     request.setRawHeader("X-Requested-By",  "hb_android_app");
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(QNetworkCookie("_simpleauth_sess",Settings::getSessionToken().toLatin1())));
 
-	networkAccessManager_->get(request);
+    networkAccessManager_->get(request);
+}
+
+QSqlQueryModel *HumbleBundleAPI::purchaseModel()
+{
+    return db.getPurchaseModel();
 }
 
 void HumbleBundleAPI::login()

@@ -9,6 +9,7 @@ Rectangle {
         target: HumbleApi
         onOrderListUpdated: {
             pageBundlesRect.loading = false;
+            bundlesList.model = HumbleApi.purchaseModel();
         }
     }
 
@@ -23,6 +24,8 @@ Rectangle {
         if(HumbleApi.isRefreshNeeded()) {
             pageBundlesRect.loading = true;
             HumbleApi.updateOrderList();
+        } else {
+            bundlesList.model = purchaseModel;
         }
     }
 
@@ -44,7 +47,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        console.log(machine_name);
+                        console.log(intname);
                     }
                 }
             }
@@ -52,14 +55,10 @@ Rectangle {
                 id: txt
                 x: backgroundRect.x + 10
                 anchors.verticalCenter: backgroundRect.verticalCenter
-                text: human_name
+                text: humanname
                 color: "black"
             }
         }
-    }
-
-    ListModel {
-        id: bundlesListModel
     }
 
     // visible stuff
@@ -75,8 +74,6 @@ Rectangle {
         id: bundlesList
         anchors.fill: parent
         visible: !pageBundlesRect.loading
-
-        model: bundlesListModel
         delegate: bundlesListDelegate
         cacheBuffer: 100
         clip: true

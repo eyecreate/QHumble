@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QDebug>
 #include <QSqlQuery>
+#include <QSqlRecord>
 
 HumbleDB::HumbleDB()
 {
@@ -86,7 +87,7 @@ void HumbleDB::addFile(File file)
     emit newDBEntry();
 }
 
-Purchase HumbleDB::getPurchase(int id)
+/*Purchase HumbleDB::getPurchase(int id)
 {
     //TODO
 }
@@ -104,7 +105,7 @@ Download HumbleDB::getDownload(int id)
 File HumbleDB::getFile(int id)
 {
     //TODO
-}
+}*/
 
 int HumbleDB::getPurchaseCount()
 {
@@ -119,9 +120,31 @@ int HumbleDB::getPurchaseCount()
     return 0;
 }
 
-QList<Purchase> HumbleDB::getAllPurchases()
+QSqlQueryModel *HumbleDB::getPurchaseModel()
 {
-    //TODO
+    QSqlDatabase db = QSqlDatabase::database(databaseName);
+    purchaseModel.setQuery("SELECT * FROM `Purchase`",db);
+    return &purchaseModel;
+}
+
+/*QList<Purchase> HumbleDB::getAllPurchases()
+{
+    QList<Purchase> purchases;
+    QSqlDatabase db = QSqlDatabase::database(databaseName);
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM `Purchase`");
+    query.exec();
+    while(query.next())
+    {
+        Purchase purchase;
+        purchase.setId(query.value("id").toInt());
+        purchase.setType(query.value("type").toString());
+        purchase.setIntName(query.value("intname").toString());
+        purchase.setHumanName(query.value("humanname").toString());
+        purchase.setHumbleId(query.value("humbleid").toString());
+        purchases.append(purchase);
+    }
+    return purchases;
 }
 
 QList<Product> HumbleDB::getProductsForPurchase(int id)
@@ -137,4 +160,4 @@ QList<Download> HumbleDB::getDownloadsForProduct(int id)
 QList<File> HumbleDB::getFilesForDownload(int id)
 {
     //TODO
-}
+}*/
