@@ -1,7 +1,5 @@
 TEMPLATE = app
 
-include(Nut/nut.pri)
-
 QT += qml quick widgets sql
 
 SOURCES += main.cpp \

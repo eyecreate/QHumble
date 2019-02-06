@@ -8,7 +8,7 @@ Rectangle {
     Connections {
         target: HumbleApi
         onOrderListUpdated: {
-            pagesBundlesRect.loading = false;
+            pageBundlesRect.loading = false;
         }
     }
 
@@ -20,8 +20,10 @@ Rectangle {
     property bool loading: false
 
     function startUpdate() {
-        pageBundlesRect.loading = true;
-        HumbleApi.updateOrderList();
+        if(HumbleApi.isRefreshNeeded()) {
+            pageBundlesRect.loading = true;
+            HumbleApi.updateOrderList();
+        }
     }
 
     Component {

@@ -11,13 +11,10 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <settings.h>
-#include <QStandardPaths>
-#include <Query>
 #include "db/purchase.h"
 #include "db/product.h"
 #include "db/download.h"
 #include "db/file.h"
-#include <QDir>
 
 #include <QDebug>
 
@@ -41,14 +38,6 @@ HumbleBundleAPI::HumbleBundleAPI()
     if(Settings::getSessionToken().size() > 0) {
         isLoggedIn_ = true;
         //networkAccessManager_->cookieJar()->insertCookie(QNetworkCookie("_simpleauth_sess",Settings::getSessionToken().toLatin1()));
-    }
-    db.setDriver("QSQLITE");
-    QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    QString file = QDir(dbPath).filePath("humbleDB.db");
-    qDebug() << "DB location:" << file;
-    db.setDatabaseName(file);
-    if(!db.open()) {
-        emit error("DB can not open");
     }
 }
 
@@ -77,7 +66,16 @@ void HumbleBundleAPI::updateOrderList()
     request.setRawHeader("X-Requested-By",  "hb_android_app");
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(QNetworkCookie("_simpleauth_sess",Settings::getSessionToken().toLatin1())));
 
-	networkAccessManager_->get(request);
+    networkAccessManager_->get(request);
+}
+
+bool HumbleBundleAPI::isRefreshNeeded()
+{
+    if(db.getPurchaseCount() > 0)
+    {
+        return false;
+    }
+    return true;
 }
 
 void HumbleBundleAPI::updateOrder(const QString & orderId)
@@ -124,18 +122,17 @@ void HumbleBundleAPI::login()
 
 void HumbleBundleAPI::parseOrderList(const QByteArray & json)
 {
-    //delete files in DB.
-    db.files()->query()->remove();
+    //delete DB. TODO: eventually find a good way to only update entries when refreshing.
+    db.clearDB();
     //Retrieve details of each purchase and add them to the DB.
 
 	QJsonDocument jDoc = QJsonDocument::fromJson(json);
 	QJsonArray array = jDoc.array();
+    refreshCounter = array.size();
 	for (int i = 0; i < array.size(); ++i) {
 		QJsonObject object = array[i].toObject();
         updateOrder(object["gamekey"].toString());
     }
-    emit orderListUpdated(); //Might trigger too soon with async network calls.
-    qDebug() << "Finished sending orders to update.";
 }
 
 void HumbleBundleAPI::parseProductList(const QByteArray & json)
@@ -144,89 +141,79 @@ void HumbleBundleAPI::parseProductList(const QByteArray & json)
 	QJsonDocument jDoc = QJsonDocument::fromJson(json);
 	QJsonObject object = jDoc.object();
 
-    bool newDBEntry = false;
+    bool newDBEntry = true;
 
-    //Check if DB entry exists. If so, update, otherwise, add new one.
-    Purchase *purchase;
-    if(db.purchases()->query()->where(Purchase::humbleidField() == object["gamekey"].toString())->count() > 0) {
-        //Update existing extry
-        purchase = db.purchases()->query()->where(Purchase::humbleidField() == object["gamekey"].toString())->first();
-    } else {
-        //make new entry.
-        newDBEntry = true;
-        purchase = new Purchase();
-    }
-    purchase->setType(object["product"].toObject()["category"].toString());
-    purchase->setIntName(object["product"].toObject()["machine_name"].toString());
-    purchase->setHumanName(object["product"].toObject()["human_name"].toString());
-    purchase->setHumbleId(object["gamekey"].toString());
+    //TODO: Check if DB entry exists. If so, update, otherwise, add new one.
+    Purchase purchase;
 
-    if(newDBEntry) db.purchases()->append(purchase);
+    purchase.setType(object["product"].toObject()["category"].toString());
+    purchase.setIntName(object["product"].toObject()["machine_name"].toString());
+    purchase.setHumanName(object["product"].toObject()["human_name"].toString());
+    purchase.setHumbleId(object["gamekey"].toString());
+
+    if(newDBEntry) db.addPurchase(purchase);
 
     //Seperate Purchase into products
 	QJsonArray  subProducts = object["subproducts"].toArray();
 
 	for (int i = 0; i < subProducts.size(); ++i) {
-        bool newProductEntry = false;
+        bool newProductEntry = true;
         QJsonObject jsonProduct = subProducts[i].toObject();
 
-        //Check if DB entry exists. If so, update, otherwise, add new one.
-        Product *product;
+        //TODO: Check if DB entry exists. If so, update, otherwise, add new one.
+        Product product;
 
-        if(db.products()->query()->where(Product::intnameField() == jsonProduct["machine_name"].toString())->count() > 0) {
-            //Update existing extry
-            product = db.products()->query()->where(Product::intnameField() == jsonProduct["machine_name"].toString())->first();
-        } else {
-            //make new entry.
-            product = new Product();
+        product.setIconURL(jsonProduct["icon"].toString());
+        product.setHumanName(jsonProduct["human_name"].toString());
+        product.setIntName(jsonProduct["machine_name"].toString());
+        product.setPurchaseId(purchase.getId());
+
+        //Check if product matches valid product to add to DB.
+        if(jsonProduct["downloads"].toArray().size() == 0 || jsonProduct["library_family_name"].toString() == "hidden") {
+            continue;
         }
 
-        product->setIconURL(jsonProduct["icon"].toString());
-        product->setHumanName(jsonProduct["human_name"].toString());
-        product->setIntName(jsonProduct["machine_name"].toString());
-        product->setPurchaseId(purchase->id());
-
-        if(newProductEntry) purchase->products()->append(product);
+        if(newProductEntry) db.addProduct(product);
 
 		QJsonArray downloadArray = jsonProduct["downloads"].toArray();
 		for (int j = 0; j < downloadArray.size(); ++j) {
-            bool newDownloadEntry = false;
+            bool newDownloadEntry = true;
             QJsonObject jsonDownload = downloadArray[j].toObject();
 
-            //Check if DB entry exists. If so, update, otherwise, add new one.
-            Download *download;
+            //TODO: Check if DB entry exists. If so, update, otherwise, add new one.
+            Download download;
 
-            if(db.downloads()->query()->where(Download::intnameField() == jsonDownload["machine_name"].toString())->count() > 0) {
-                //Update existing extry
-                download = db.downloads()->query()->where(Download::intnameField() == jsonDownload["machine_name"].toString())->first();
-            } else {
-                //make new entry.
-                download = new Download();
-            }
+            download.setIntName(jsonDownload["machine_name"].toString());
+            download.setPlatform(jsonDownload["platform"].toString());
+            download.setProductId(product.getId());
 
-            download->setIntName(jsonDownload["machine_name"].toString());
-            download->setPlatform(jsonDownload["platform"].toString());
-            download->setProductId(product->id());
+            if(newDownloadEntry) db.addDownload(download);
 
-            if(newDownloadEntry) product->downloads()->append(download);
-
-            //Since all files are erased, append all file entries.
             QJsonArray fileArray = jsonDownload["download_struct"].toArray();
             for(int k = 0; k < fileArray.size(); ++k) {
                 QJsonObject jsonFile = fileArray[k].toObject();
-                File *file = new File();
-                file->setMD5(jsonFile["md5"].toString());
-                file->setName(jsonFile["name"].toString());
-                file->setWebURL(jsonFile["url"].toObject()["web"].toString());
-                file->setBitTorrentURL(jsonFile["url"].toObject()["bittorrent"].toString());
-                file->setFilesize(jsonFile["file_size"].toInt());
-                file->setDownloadId(download->id());
+                File file;
+                file.setMD5(jsonFile["md5"].toString());
+                file.setName(jsonFile["name"].toString());
+                file.setWebURL(jsonFile["url"].toObject()["web"].toString());
+                file.setBitTorrentURL(jsonFile["url"].toObject()["bittorrent"].toString());
+                file.setFileSize(jsonFile["file_size"].toInt());
+                file.setDownloadId(download.getId());
 
-                download->files()->append(file);
+                db.addFile(file);
             }
 		}
-	}
-    db.saveChanges();
+    }
+
+    completedParsingOnePurchase();
+}
+
+void HumbleBundleAPI::completedParsingOnePurchase()
+{
+    refreshCounter--;
+    if(refreshCounter <= 0) {
+        emit orderListUpdated();
+    }
 }
 
 void HumbleBundleAPI::onFinished(QNetworkReply * reply)

@@ -1,31 +1,35 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include <QObject>
-#include <Table>
+#include <QString>
 
-class Download;
-class File : public Nut::Table
+class File
 {
-    Q_OBJECT
-
-    NUT_PRIMARY_AUTO_INCREMENT(id)
-    NUT_DECLARE_FIELD(int, id, id, setId)
-    NUT_NOT_NULL(name)
-    NUT_DECLARE_FIELD(QString, name, name, setName)
-    NUT_DECLARE_FIELD(int, filesize, filesize, setFilesize)
-    NUT_DECLARE_FIELD(QString, md5, MD5, setMD5)
-    NUT_DECLARE_FIELD(QString, weburl, webURL, setWebURL)
-    NUT_DECLARE_FIELD(QString, bittorrenturl, bitTorrentURL, setBitTorrentURL)
-    NUT_FOREGION_KEY(Download, int, download, download, setDownload)
 public:
-    Q_INVOKABLE File(QObject *parent = nullptr);
+    explicit File();
+    int getId();
+    QString getName();
+    int getFileSize();
+    QString getMD5();
+    QString getWebURL();
+    QString getBitTorrentURL();
+    int getDownloadId();
+    void setId(int id);
+    void setName(QString name);
+    void setFileSize(int filesize);
+    void setMD5(QString md5);
+    void setWebURL(QString webUrl);
+    void setBitTorrentURL(QString bitTorrentUrl);
+    void setDownloadId(int id);
 
-signals:
-
-public slots:
+private:
+    int id;
+    QString name;
+    int filesize;
+    QString md5;
+    QString webUrl;
+    QString bitTorrentUrl;
+    int downloadId;
 };
-
-Q_DECLARE_METATYPE(File*)
 
 #endif // FILE_H

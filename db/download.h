@@ -1,32 +1,26 @@
 #ifndef DOWNLOAD_H
 #define DOWNLOAD_H
 
-#include <QObject>
-#include <Table>
-#include <TableSet>
+#include <QString>
 
-class File;
-class Product;
-class Download : public Nut::Table
+class Download
 {
-    Q_OBJECT
-
-    NUT_PRIMARY_AUTO_INCREMENT(id)
-    NUT_DECLARE_FIELD(int, id, id, setId)
-    NUT_UNIQUE(intname)
-    NUT_DECLARE_FIELD(QString, intname, intName, setIntName)
-    NUT_NOT_NULL(platform)
-    NUT_DECLARE_FIELD(QString, platform, platform, setPlatform)
-    NUT_DECLARE_CHILD_TABLE(File, files)
-    NUT_FOREGION_KEY(Product, int, product, product, setProduct)
 public:
-    Q_INVOKABLE Download(QObject *parent = nullptr);
+    explicit Download();
+    int getId();
+    QString getIntName();
+    QString getPlatform();
+    int getProductId();
+    void setId(int id);
+    void setIntName(QString intName);
+    void setPlatform(QString platform);
+    void setProductId(int id);
 
-signals:
-
-public slots:
+private:
+    int id;
+    QString intName;
+    QString platform;
+    int productId;
 };
-
-Q_DECLARE_METATYPE(Download*)
 
 #endif // DOWNLOAD_H

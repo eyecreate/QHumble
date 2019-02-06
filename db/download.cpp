@@ -1,9 +1,46 @@
 #include "download.h"
 #include "file.h"
 
-Download::Download(QObject *parent) : Nut::Table(parent),
-    m_id(0), m_platform(""), m_files(new Nut::TableSet<File>(this)), m_intname("")
+Download::Download()
 {
 }
 
-NUT_IMPLEMENT_CHILD_TABLE(Download, File, files)
+int Download::getId()
+{
+    return id;
+}
+
+QString Download::getIntName()
+{
+    return intName;
+}
+
+QString Download::getPlatform()
+{
+    return platform;
+}
+
+int Download::getProductId()
+{
+    return productId;
+}
+
+void Download::setId(int id)
+{
+    this->id = id;
+}
+
+void Download::setIntName(QString intName)
+{
+    this->intName = intName;
+}
+
+void Download::setPlatform(QString platform)
+{
+    this->platform = platform;
+}
+
+void Download::setProductId(int id)
+{
+    this->productId = id;
+}

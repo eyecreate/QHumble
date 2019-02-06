@@ -16,6 +16,7 @@ public:
     Q_INVOKABLE void updateOrderList();
 
     Q_INVOKABLE bool isLoggedIn() { return isLoggedIn_; }
+    Q_INVOKABLE bool isRefreshNeeded();
 
     Q_INVOKABLE void updateOrder(const QString & orderId);
 
@@ -33,6 +34,7 @@ private:
 
     void parseOrderList(const QByteArray & json);
     void parseProductList(const QByteArray & json);
+    void completedParsingOnePurchase();
 
     HumbleDB db;
 
@@ -41,6 +43,7 @@ private:
 	QString password_;
     QString twoFactor_;
     QString reCaptcha_;
+    int refreshCounter = 0;
 
 	QNetworkAccessManager * networkAccessManager_;
 	bool isLoggedIn_;

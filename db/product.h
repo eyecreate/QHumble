@@ -1,34 +1,28 @@
 #ifndef PRODUCT_H
 #define PRODUCT_H
 
-#include <QObject>
-#include <Table>
-#include <TableSet>
+#include <QString>
 
-class Download;
-class Purchase;
-class Product : public Nut::Table
+class Product
 {
-    Q_OBJECT
-
-    NUT_PRIMARY_AUTO_INCREMENT(id)
-    NUT_DECLARE_FIELD(int, id, id, setId)
-    NUT_NOT_NULL(intname)
-    NUT_UNIQUE(intname)
-    NUT_DECLARE_FIELD(QString, intname, intName, setIntName)
-    NUT_NOT_NULL(humanname)
-    NUT_DECLARE_FIELD(QString, humanname, humanName, setHumanName)
-    NUT_DECLARE_FIELD(QString, iconurl, iconURL, setIconURL)
-    NUT_DECLARE_CHILD_TABLE(Download, downloads)
-    NUT_FOREGION_KEY(Purchase, int, purchase, purchase, setPurchase)
 public:
-    Q_INVOKABLE Product(QObject *parent = nullptr);
-
-signals:
-
-public slots:
+    explicit Product();
+    int getId();
+    QString getIntName();
+    QString getHumanName();
+    QString getIconURL();
+    int getPurchaseId();
+    void setId(int id);
+    void setIntName(QString intName);
+    void setHumanName(QString humanName);
+    void setIconURL(QString iconURL);
+    void setPurchaseId(int id);
+private:
+    int id;
+    QString intName;
+    QString humanName;
+    QString iconURL;
+    int purchaseId;
 };
-
-Q_DECLARE_METATYPE(Product*)
 
 #endif // PRODUCT_H

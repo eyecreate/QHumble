@@ -5,13 +5,13 @@
 
 QVariant SettingsBase::readEntry(const QString &key, const QVariant defaultValue)
 {
-    QSettings settings("CMon", "QPod");
+    QSettings settings("CMon", "QHumble");
     return settings.value(key, defaultValue);
 }
 
 void SettingsBase::writeEntry(const QString &key, const QVariant &value)
 {
-    QSettings settings("CMon", "QPod");
+    QSettings settings("CMon", "QHumble");
     settings.setValue(key, value);
 }
 

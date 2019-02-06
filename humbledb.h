@@ -4,29 +4,36 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <QSqlDriver>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <Database>
+#include "db/purchase.h"
+#include "db/product.h"
+#include "db/download.h"
+#include "db/file.h"
+#include <QList>
 
-class Purchase;
-class Product;
-class Download;
-class File;
-class HumbleDB : public Nut::Database
+class HumbleDB : public QObject
 {
     Q_OBJECT
-
-    NUT_DB_VERSION(1)
-
-    NUT_DECLARE_TABLE(Purchase, purchases)
-    NUT_DECLARE_TABLE(Product, products)
-    NUT_DECLARE_TABLE(Download, downloads)
-    NUT_DECLARE_TABLE(File, files)
 public:
     explicit HumbleDB();
+    const QString databaseName = "qhumble";
+    void clearDB();
+    void addPurchase(Purchase purchase);
+    void addProduct(Product product);
+    void addDownload(Download download);
+    void addFile(File file);
+    Purchase getPurchase(int id);
+    Product getProduct(int id);
+    Download getDownload(int id);
+    File getFile(int id);
+    int getPurchaseCount();
+    QList<Purchase> getAllPurchases();
+    QList<Product> getProductsForPurchase(int id);
+    QList<Download> getDownloadsForProduct(int id);
+    QList<File> getFilesForDownload(int id);
 
 signals:
-
+    void dbCleared();
+    void newDBEntry();
 public slots:
 
 private:
