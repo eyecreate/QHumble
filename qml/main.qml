@@ -44,6 +44,7 @@ ApplicationWindow {
                 onClicked: {
                     if(mainViewManger.currentIndex == 3) mainViewManger.currentIndex = 2
                     if(mainViewManger.currentIndex == 1) mainViewManger.currentIndex = 0
+                    if(mainViewManger.currentIndex == 4) mainViewManger.currentIndex = 3
                 }
             }
 
@@ -83,6 +84,10 @@ ApplicationWindow {
 
         PageProducts {
             id: pageProducts
+        }
+
+        PageDownloads {
+            id: pageDownloads
         }
     }
 }

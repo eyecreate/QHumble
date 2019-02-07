@@ -46,7 +46,8 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        console.log(intname);
+                        mainViewManger.currentIndex = 4;
+                        pageDownloads.changeProduct(id);
                     }
                 }
             }
