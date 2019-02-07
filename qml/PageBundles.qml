@@ -31,13 +31,13 @@ Rectangle {
     }
 
     function purchaseType(type) {
-        if(type == "storefront") {
+        if(type === "storefront") {
             return "qrc:/qml/assets/images/purchase/store-solid.svg"
-        } else if(type == "widget") {
+        } else if(type === "widget") {
             return "qrc:/qml/assets/images/purchase/globe-solid.svg"
-        } else if(type == "bundle") {
+        } else if(type === "bundle") {
             return "qrc:/qml/assets/images/purchase/sitemap-solid.svg"
-        } else if(type == "subscriptionplan" || type == "subscriptioncontent") {
+        } else if(type === "subscriptionplan" || type === "subscriptioncontent") {
             return "qrc:/qml/assets/images/purchase/wallet-solid.svg"
         } else {
             return "qrc:/qml/assets/images/platform/all.svg"

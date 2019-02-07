@@ -16,6 +16,7 @@ RESOURCES += qml.qrc
 
 !android {
     RESOURCES += notOnMobile.qrc
+    QT +=  webengine
 } else {
     RESOURCES += dummyMobile.qrc
 }

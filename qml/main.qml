@@ -37,6 +37,15 @@ ApplicationWindow {
             }
 
             ToolButton {
+                text: "‹"
+                anchors.top: parent.top
+                implicitHeight: 39
+                onClicked: {
+                    if(mainViewManger.currentIndex == 3) mainViewManger.currentIndex = 2
+                }
+            }
+
+            ToolButton {
                 text: qsTr("Log Out")
                 anchors.top: parent.top
                 implicitHeight: 39
@@ -67,6 +76,10 @@ ApplicationWindow {
 
         PageBundles {
             id: pageBundles
+        }
+
+        PageProducts {
+            id: pageProducts
         }
     }
 }
