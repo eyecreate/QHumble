@@ -23,6 +23,8 @@ public:
     Q_INVOKABLE QVariant purchaseModel();
     Q_INVOKABLE QVariant productsModel(int purchaseId);
     Q_INVOKABLE QVariant productPlatforms(int product);
+    Q_INVOKABLE QVariant downloadsModel(int product);
+    Q_INVOKABLE QVariant filesModel(int download);
 
 signals:
 	void orderListUpdated();

@@ -22,18 +22,12 @@ public:
     int addProduct(Product product);
     int addDownload(Download download);
     int addFile(File file);
-    /*Purchase getPurchase(int id);
-    Product getProduct(int id);
-    Download getDownload(int id);
-    File getFile(int id);*/
     int getPurchaseCount();
     QSqlQueryModel *getPurchaseModel();
     QSqlQueryModel *getProductModel(int purchaseId);
     QSqlQueryModel *getProductPlatforms(int product);
-    /*QList<Purchase> getAllPurchases();
-    QList<Product> getProductsForPurchase(int id);
-    QList<Download> getDownloadsForProduct(int id);
-    QList<File> getFilesForDownload(int id);*/
+    QSqlQueryModel *getDownloadModel(int product);
+    QSqlQueryModel *getFileModel(int download);
 
 signals:
     void dbCleared();

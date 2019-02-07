@@ -115,6 +115,18 @@ QVariant HumbleBundleAPI::productPlatforms(int product)
     return QVariant::fromValue(model);
 }
 
+QVariant HumbleBundleAPI::downloadsModel(int product)
+{
+    QSqlQueryModel *model = db.getDownloadModel(product);
+    return QVariant::fromValue(model);
+}
+
+QVariant HumbleBundleAPI::filesModel(int download)
+{
+    QSqlQueryModel *model = db.getFileModel(download);
+    return QVariant::fromValue(model);
+}
+
 void HumbleBundleAPI::login()
 {
 	QUrlQuery queryUrl;

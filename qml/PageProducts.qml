@@ -11,7 +11,6 @@ Rectangle {
     }
 
     function platformIcon(platform) {
-        console.log(platform);
         if(platform === "linux") {
             return "qrc:/qml/assets/images/platform/linux.svg";
         } else if(platform === "mac") {
@@ -72,6 +71,7 @@ Rectangle {
 
             GridView {
                 id: platforms
+                interactive: false
                 flow: GridView.FlowTopToBottom
                 layoutDirection: Qt.RightToLeft
                 anchors.top: parent.top

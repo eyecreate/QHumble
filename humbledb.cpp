@@ -91,26 +91,6 @@ int HumbleDB::addFile(File file)
     return query.lastInsertId().toInt();
 }
 
-/*Purchase HumbleDB::getPurchase(int id)
-{
-    //TODO
-}
-
-Product HumbleDB::getProduct(int id)
-{
-    //TODO
-}
-
-Download HumbleDB::getDownload(int id)
-{
-    //TODO
-}
-
-File HumbleDB::getFile(int id)
-{
-    //TODO
-}*/
-
 int HumbleDB::getPurchaseCount()
 {
     QSqlDatabase db = QSqlDatabase::database(databaseName);
@@ -148,37 +128,18 @@ QSqlQueryModel *HumbleDB::getProductPlatforms(int product)
     return model;
 }
 
-/*QList<Purchase> HumbleDB::getAllPurchases()
+QSqlQueryModel *HumbleDB::getDownloadModel(int product)
 {
-    QList<Purchase> purchases;
     QSqlDatabase db = QSqlDatabase::database(databaseName);
-    QSqlQuery query(db);
-    query.prepare("SELECT * FROM `Purchase`");
-    query.exec();
-    while(query.next())
-    {
-        Purchase purchase;
-        purchase.setId(query.value("id").toInt());
-        purchase.setType(query.value("type").toString());
-        purchase.setIntName(query.value("intname").toString());
-        purchase.setHumanName(query.value("humanname").toString());
-        purchase.setHumbleId(query.value("humbleid").toString());
-        purchases.append(purchase);
-    }
-    return purchases;
+    QSqlQueryModel *model = new CustomQueryModel(this);
+    model->setQuery("SELECT * FROM `Download` WHERE Download.product = "+QString::number(product),db);
+    return model;
 }
 
-QList<Product> HumbleDB::getProductsForPurchase(int id)
+QSqlQueryModel *HumbleDB::getFileModel(int download)
 {
-    //TODO
+    QSqlDatabase db = QSqlDatabase::database(databaseName);
+    QSqlQueryModel *model = new CustomQueryModel(this);
+    model->setQuery("SELECT * FROM `File` WHERE File.download = "+QString::number(download),db);
+    return model;
 }
-
-QList<Download> HumbleDB::getDownloadsForProduct(int id)
-{
-    //TODO
-}
-
-QList<File> HumbleDB::getFilesForDownload(int id)
-{
-    //TODO
-}*/

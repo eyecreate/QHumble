@@ -24,5 +24,6 @@
         <file>qml/assets/images/h_huge.png</file>
         <file>qml/PageProducts.qml</file>
         <file>qml/PageCaptcha.qml</file>
+        <file>qml/PageDownloads.qml</file>
     </qresource>
 </RCC>
