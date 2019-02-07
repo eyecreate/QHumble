@@ -18,10 +18,10 @@ public:
     explicit HumbleDB();
     const QString databaseName = "qhumble";
     void clearDB();
-    void addPurchase(Purchase purchase);
-    void addProduct(Product product);
-    void addDownload(Download download);
-    void addFile(File file);
+    int addPurchase(Purchase purchase);
+    int addProduct(Product product);
+    int addDownload(Download download);
+    int addFile(File file);
     /*Purchase getPurchase(int id);
     Product getProduct(int id);
     Download getDownload(int id);

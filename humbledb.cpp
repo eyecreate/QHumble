@@ -34,7 +34,7 @@ void HumbleDB::clearDB()
     emit dbCleared();
 }
 
-void HumbleDB::addPurchase(Purchase purchase)
+int HumbleDB::addPurchase(Purchase purchase)
 {
     QSqlDatabase db = QSqlDatabase::database(databaseName);
     QSqlQuery query(db);
@@ -45,9 +45,10 @@ void HumbleDB::addPurchase(Purchase purchase)
     query.bindValue(":humbleid",purchase.getHumbleId());
     query.exec();
     emit newDBEntry();
+    return query.lastInsertId().toInt();
 }
 
-void HumbleDB::addProduct(Product product)
+int HumbleDB::addProduct(Product product)
 {
     QSqlDatabase db = QSqlDatabase::database(databaseName);
     QSqlQuery query(db);
@@ -58,9 +59,10 @@ void HumbleDB::addProduct(Product product)
     query.bindValue(":purchase",product.getPurchaseId());
     query.exec();
     emit newDBEntry();
+    return query.lastInsertId().toInt();
 }
 
-void HumbleDB::addDownload(Download download)
+int HumbleDB::addDownload(Download download)
 {
     QSqlDatabase db = QSqlDatabase::database(databaseName);
     QSqlQuery query(db);
@@ -70,9 +72,10 @@ void HumbleDB::addDownload(Download download)
     query.bindValue(":product",download.getProductId());
     query.exec();
     emit newDBEntry();
+    return query.lastInsertId().toInt();
 }
 
-void HumbleDB::addFile(File file)
+int HumbleDB::addFile(File file)
 {
     QSqlDatabase db = QSqlDatabase::database(databaseName);
     QSqlQuery query(db);
@@ -85,6 +88,7 @@ void HumbleDB::addFile(File file)
     query.bindValue(":download",file.getDownloadId());
     query.exec();
     emit newDBEntry();
+    return query.lastInsertId().toInt();
 }
 
 /*Purchase HumbleDB::getPurchase(int id)

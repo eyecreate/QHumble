@@ -9,7 +9,7 @@ Rectangle {
         target: HumbleApi
         onOrderListUpdated: {
             pageBundlesRect.loading = false;
-            bundlesList.model = HumbleApi.purchaseModel();
+            bundlesList.model = purchaseModel;
         }
     }
 

@@ -147,6 +147,7 @@ void HumbleBundleAPI::parseProductList(const QByteArray & json)
 	QJsonObject object = jDoc.object();
 
     bool newDBEntry = true;
+    int lastPurchaseId = -1;
 
     //TODO: Check if DB entry exists. If so, update, otherwise, add new one.
     Purchase purchase;
@@ -156,13 +157,14 @@ void HumbleBundleAPI::parseProductList(const QByteArray & json)
     purchase.setHumanName(object["product"].toObject()["human_name"].toString());
     purchase.setHumbleId(object["gamekey"].toString());
 
-    if(newDBEntry) db.addPurchase(purchase);
+    if(newDBEntry) lastPurchaseId = db.addPurchase(purchase);
 
     //Seperate Purchase into products
 	QJsonArray  subProducts = object["subproducts"].toArray();
 
 	for (int i = 0; i < subProducts.size(); ++i) {
         bool newProductEntry = true;
+        int lastProductId = -1;
         QJsonObject jsonProduct = subProducts[i].toObject();
 
         //TODO: Check if DB entry exists. If so, update, otherwise, add new one.
@@ -171,18 +173,19 @@ void HumbleBundleAPI::parseProductList(const QByteArray & json)
         product.setIconURL(jsonProduct["icon"].toString());
         product.setHumanName(jsonProduct["human_name"].toString());
         product.setIntName(jsonProduct["machine_name"].toString());
-        product.setPurchaseId(purchase.getId());
+        product.setPurchaseId(lastPurchaseId);
 
         //Check if product matches valid product to add to DB.
         if(jsonProduct["downloads"].toArray().size() == 0 || jsonProduct["library_family_name"].toString() == "hidden") {
             continue;
         }
 
-        if(newProductEntry) db.addProduct(product);
+        if(newProductEntry) lastProductId = db.addProduct(product);
 
 		QJsonArray downloadArray = jsonProduct["downloads"].toArray();
 		for (int j = 0; j < downloadArray.size(); ++j) {
             bool newDownloadEntry = true;
+            int lastDownloadId = -1;
             QJsonObject jsonDownload = downloadArray[j].toObject();
 
             //TODO: Check if DB entry exists. If so, update, otherwise, add new one.
@@ -190,9 +193,9 @@ void HumbleBundleAPI::parseProductList(const QByteArray & json)
 
             download.setIntName(jsonDownload["machine_name"].toString());
             download.setPlatform(jsonDownload["platform"].toString());
-            download.setProductId(product.getId());
+            download.setProductId(lastProductId);
 
-            if(newDownloadEntry) db.addDownload(download);
+            if(newDownloadEntry) lastDownloadId = db.addDownload(download);
 
             QJsonArray fileArray = jsonDownload["download_struct"].toArray();
             for(int k = 0; k < fileArray.size(); ++k) {
@@ -203,7 +206,7 @@ void HumbleBundleAPI::parseProductList(const QByteArray & json)
                 file.setWebURL(jsonFile["url"].toObject()["web"].toString());
                 file.setBitTorrentURL(jsonFile["url"].toObject()["bittorrent"].toString());
                 file.setFileSize(jsonFile["file_size"].toInt());
-                file.setDownloadId(download.getId());
+                file.setDownloadId(lastDownloadId);
 
                 db.addFile(file);
             }
