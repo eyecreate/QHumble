@@ -5,7 +5,7 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 
-HumbleDB::HumbleDB()
+HumbleDB::HumbleDB(QObject *parent):QObject (parent)
 {
     //Initialize DB for future connections.
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",databaseName);
@@ -127,8 +127,25 @@ int HumbleDB::getPurchaseCount()
 QSqlQueryModel *HumbleDB::getPurchaseModel()
 {
     QSqlDatabase db = QSqlDatabase::database(databaseName);
-    purchaseModel.setQuery("SELECT * FROM `Purchase`",db);
-    return &purchaseModel;
+    QSqlQueryModel *model = new CustomQueryModel(this);
+    model->setQuery("SELECT * FROM `Purchase`",db);
+    return model;
+}
+
+QSqlQueryModel *HumbleDB::getProductModel(int purchaseId)
+{
+    QSqlDatabase db = QSqlDatabase::database(databaseName);
+    QSqlQueryModel *model = new CustomQueryModel(this);
+    model->setQuery("SELECT * FROM `Product` WHERE Product.purchase = "+QString::number(purchaseId),db);
+    return model;
+}
+
+QSqlQueryModel *HumbleDB::getProductPlatforms(int product)
+{
+    QSqlDatabase db = QSqlDatabase::database(databaseName);
+    QSqlQueryModel *model = new CustomQueryModel(this);
+    model->setQuery("SELECT DISTINCT platform FROM `Download` WHERE Download.product = "+QString::number(product),db);
+    return model;
 }
 
 /*QList<Purchase> HumbleDB::getAllPurchases()

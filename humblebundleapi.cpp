@@ -15,6 +15,7 @@
 #include "db/product.h"
 #include "db/download.h"
 #include "db/file.h"
+#include <QSqlRecord>
 
 #include <QDebug>
 
@@ -96,9 +97,22 @@ void HumbleBundleAPI::updateOrder(const QString & orderId)
     networkAccessManager_->get(request);
 }
 
-QSqlQueryModel *HumbleBundleAPI::purchaseModel()
+QVariant HumbleBundleAPI::purchaseModel()
 {
-    return db.getPurchaseModel();
+    QSqlQueryModel *model = db.getPurchaseModel();
+    return QVariant::fromValue(model);
+}
+
+QVariant HumbleBundleAPI::productsModel(int purchaseId)
+{
+    QSqlQueryModel *model = db.getProductModel(purchaseId);
+    return QVariant::fromValue(model);
+}
+
+QVariant HumbleBundleAPI::productPlatforms(int product)
+{
+    QSqlQueryModel *model = db.getProductPlatforms(product);
+    return QVariant::fromValue(model);
 }
 
 void HumbleBundleAPI::login()

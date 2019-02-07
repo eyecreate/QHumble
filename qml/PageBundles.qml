@@ -10,7 +10,7 @@ Rectangle {
         target: HumbleApi
         onOrderListUpdated: {
             pageBundlesRect.loading = false;
-            bundlesList.model = purchaseModel;
+            bundlesList.model = HumbleApi.purchaseModel();
         }
     }
 
@@ -26,7 +26,7 @@ Rectangle {
             pageBundlesRect.loading = true;
             HumbleApi.updateOrderList();
         } else {
-            bundlesList.model = purchaseModel;
+            bundlesList.model = HumbleApi.purchaseModel();
         }
     }
 
@@ -62,7 +62,8 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        console.log(intname);
+                        mainViewManger.currentIndex = 3;
+                        pageProducts.changePurchase(id);
                     }
                 }
             }

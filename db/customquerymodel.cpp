@@ -1,7 +1,9 @@
 #include "customquerymodel.h"
 #include <QSqlRecord>
+#include <QSqlQuery>
 
-CustomQueryModel::CustomQueryModel()
+
+CustomQueryModel::CustomQueryModel(QObject *parent): QSqlQueryModel (parent)
 {
 
 }

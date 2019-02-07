@@ -20,7 +20,9 @@ public:
     Q_INVOKABLE bool isRefreshNeeded();
 
     Q_INVOKABLE void updateOrder(const QString & orderId);
-    QSqlQueryModel *purchaseModel();
+    Q_INVOKABLE QVariant purchaseModel();
+    Q_INVOKABLE QVariant productsModel(int purchaseId);
+    Q_INVOKABLE QVariant productPlatforms(int product);
 
 signals:
 	void orderListUpdated();

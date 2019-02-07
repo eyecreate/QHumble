@@ -15,7 +15,7 @@ class HumbleDB : public QObject
 {
     Q_OBJECT
 public:
-    explicit HumbleDB();
+    explicit HumbleDB(QObject *parent = nullptr);
     const QString databaseName = "qhumble";
     void clearDB();
     int addPurchase(Purchase purchase);
@@ -28,6 +28,8 @@ public:
     File getFile(int id);*/
     int getPurchaseCount();
     QSqlQueryModel *getPurchaseModel();
+    QSqlQueryModel *getProductModel(int purchaseId);
+    QSqlQueryModel *getProductPlatforms(int product);
     /*QList<Purchase> getAllPurchases();
     QList<Product> getProductsForPurchase(int id);
     QList<Download> getDownloadsForProduct(int id);
@@ -39,7 +41,6 @@ signals:
 public slots:
 
 private:
-    CustomQueryModel purchaseModel;
 };
 
 #endif // HUMBLEDB_H

@@ -8,8 +8,9 @@
 
 class CustomQueryModel : public QSqlQueryModel
 {
+    Q_OBJECT
 public:
-    CustomQueryModel();
+    explicit CustomQueryModel(QObject *parent);
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int,QByteArray> roleNames() const override;
 };
