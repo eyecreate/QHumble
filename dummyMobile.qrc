@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file alias="qml/PageCaptcha.qml">qml/androidDummies/PageCaptcha.qml</file>
-    </qresource>
-</RCC>

@@ -5,10 +5,12 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QtWebView>
 
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
+    QtWebView::initialize();
 
     Settings settings;
     HumbleBundleAPI hbApi;

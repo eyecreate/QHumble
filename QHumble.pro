@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += qml quick quickcontrols2 widgets sql
+QT += qml quick quickcontrols2 widgets sql webview
 
 SOURCES += main.cpp \
     humblebundleapi.cpp \
@@ -13,13 +13,6 @@ SOURCES += main.cpp \
     db/customquerymodel.cpp
 
 RESOURCES += qml.qrc
-
-!android {
-    RESOURCES += notOnMobile.qrc
-    QT +=  webengine
-} else {
-    RESOURCES += dummyMobile.qrc
-}
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

@@ -23,5 +23,6 @@
         <file>qml/assets/images/magnet-solid.svg</file>
         <file>qml/assets/images/h_huge.png</file>
         <file>qml/PageProducts.qml</file>
+        <file>qml/PageCaptcha.qml</file>
     </qresource>
 </RCC>

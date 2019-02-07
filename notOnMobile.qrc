@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>qml/PageCaptcha.qml</file>
-    </qresource>
-</RCC>

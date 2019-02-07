@@ -1,25 +1,36 @@
 import QtQuick 2.0
-import QtWebEngine 1.8
-WebEngineView {
-    id: webview
-    url: "https://hr-humblebundle.appspot.com/user/captcha"
-    anchors.fill: parent
-
+import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.3
+import QtWebView 1.1
+ColumnLayout {
+    id:captchaPage
+    Layout.fillHeight: true
+    Layout.fillWidth: true
     signal reCaptchaEntered(string challenge, string response)
-
-    onJavaScriptConsoleMessage: {
-        if(message.substring(0,7) == "qhumble") {
-            var a = message.split("|")
-            var challenge = a[1];
-            var response  = a[2];
-            webview.reCaptchaEntered(challenge, response);
+    WebView {
+        id: webview
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        url: "https://hr-humblebundle.appspot.com/user/captcha"
+        onLoadingChanged: {
+            if(loadRequest.status === WebView.LoadSucceededStatus) {
+                webview.runJavaScript("window.Android={setCaptchaResponse:function(challenge,response){window.Android.recap='qhumble|'+challenge+'|'+response}};");
+            }
         }
     }
-    userScripts: [
-        WebEngineScript {
-            sourceUrl:  Qt.resolvedUrl("assets/js/CaptchaInjection.js")
-            injectionPoint: WebEngineScript.Deferred
-            worldId: WebEngineScript.MainWorld
+
+    Button {
+        id:submit
+        Layout.alignment: Qt.AlignHCenter
+        text: qsTr("Click After Submitting")
+        onClicked: {
+            webview.runJavaScript("window.Android.recap",function(value){
+                var a = value.split("|")
+                var challenge = a[1];
+                var response  = a[2];
+                captchaPage.reCaptchaEntered("",response);
+            }
+            );
         }
-    ]
+    }
 }

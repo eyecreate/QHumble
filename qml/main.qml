@@ -38,17 +38,20 @@ ApplicationWindow {
 
             ToolButton {
                 text: "‹"
-                anchors.top: parent.top
+                Layout.alignment: Qt.AlignTop
                 implicitHeight: 39
+                visible: mainViewManger.currentIndex > 0 && mainViewManger.currentIndex != 2
                 onClicked: {
                     if(mainViewManger.currentIndex == 3) mainViewManger.currentIndex = 2
+                    if(mainViewManger.currentIndex == 1) mainViewManger.currentIndex = 0
                 }
             }
 
             ToolButton {
                 text: qsTr("Log Out")
-                anchors.top: parent.top
+                Layout.alignment: Qt.AlignTop
                 implicitHeight: 39
+                visible: mainViewManger.currentIndex > 1
                 onClicked: {
                     mainViewManger.currentIndex = 0
                 }
