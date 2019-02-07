@@ -8,5 +8,19 @@
         <file>qml/PageBundles.qml</file>
         <file>qml/assets/js/CaptchaInjection.js</file>
         <file>qml/Scrollbar.qml</file>
+        <file>qml/assets/images/platform/all.svg</file>
+        <file>qml/assets/images/platform/android.svg</file>
+        <file>qml/assets/images/platform/book-solid.svg</file>
+        <file>qml/assets/images/platform/linux.svg</file>
+        <file>qml/assets/images/platform/mac.svg</file>
+        <file>qml/assets/images/platform/music-solid.svg</file>
+        <file>qml/assets/images/platform/windows.svg</file>
+        <file>qml/assets/images/purchase/globe-solid.svg</file>
+        <file>qml/assets/images/purchase/sitemap-solid.svg</file>
+        <file>qml/assets/images/purchase/store-solid.svg</file>
+        <file>qml/assets/images/purchase/wallet-solid.svg</file>
+        <file>qml/assets/images/download-solid.svg</file>
+        <file>qml/assets/images/magnet-solid.svg</file>
+        <file>qml/assets/images/h_huge.png</file>
     </qresource>
 </RCC>

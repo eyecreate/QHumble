@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.Controls 2.5
 
 Rectangle {
     id: pageBundlesRect
@@ -29,6 +30,20 @@ Rectangle {
         }
     }
 
+    function purchaseType(type) {
+        if(type == "storefront") {
+            return "qrc:/qml/assets/images/purchase/store-solid.svg"
+        } else if(type == "widget") {
+            return "qrc:/qml/assets/images/purchase/globe-solid.svg"
+        } else if(type == "bundle") {
+            return "qrc:/qml/assets/images/purchase/sitemap-solid.svg"
+        } else if(type == "subscriptionplan" || type == "subscriptioncontent") {
+            return "qrc:/qml/assets/images/purchase/wallet-solid.svg"
+        } else {
+            return "qrc:/qml/assets/images/platform/all.svg"
+        }
+    }
+
     Component {
         id: bundlesListDelegate
         Item {
@@ -51,10 +66,21 @@ Rectangle {
                     }
                 }
             }
+            Image {
+                id:platformType
+                anchors.verticalCenter: backgroundRect.verticalCenter
+                anchors.left: backgroundRect.left
+                anchors.margins: 10
+                width: this.height
+                height: parent.height - 10
+                source: purchaseType(type)
+            }
+
             Text {
                 id: txt
-                x: backgroundRect.x + 10
                 anchors.verticalCenter: backgroundRect.verticalCenter
+                anchors.left: platformType.right
+                anchors.margins: 10
                 text: humanname
                 color: "black"
             }
@@ -78,10 +104,7 @@ Rectangle {
         cacheBuffer: 100
         clip: true
 
-        Scrollbar {
-            flickable: bundlesList
-            color: "#FFE4C4"
-        }
+        ScrollBar.vertical: ScrollBar {}
     }
 
 }
