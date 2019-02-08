@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += qml quick quickcontrols2 widgets sql webview
+QT += qml quick quickcontrols2 widgets sql webview svg xml
 
 SOURCES += main.cpp \
     humblebundleapi.cpp \
