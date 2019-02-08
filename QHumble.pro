@@ -32,3 +32,9 @@ HEADERS += \
 
 DISTFILES += \
     LICENSE.txt
+
+contains(ANDROID_TARGET_ARCH,arm64-v8a) {
+    ANDROID_EXTRA_LIBS = \
+        $$PWD/android-ssl/aarch64/libcrypto.so \
+        $$PWD/android-ssl/aarch64/libssl.so
+}
