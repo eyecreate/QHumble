@@ -1,10 +1,10 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.1
+import QtQuick.Controls 2.2
 
 Rectangle {
     id: pageLoginRect
-    width: 100
-    height: 62
+    width: 62
+    height: 100
 
     Connections {
         target: HumbleApi
@@ -60,7 +60,6 @@ Rectangle {
         }
         TextField {
             id: loginInput
-            width: 350
         }
 
         Label {
@@ -68,7 +67,6 @@ Rectangle {
         }
         TextField {
             id: passwordInput
-            width: 350
             echoMode: TextInput.Password
         }
 
@@ -77,7 +75,6 @@ Rectangle {
         }
         TextField {
             id: twoFactorInput
-            width: 250
         }
     }
 

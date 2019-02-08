@@ -9,7 +9,8 @@
 
 int main(int argc, char *argv[])
 {
-	QApplication app(argc, argv);
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication app(argc, argv);
     QtWebView::initialize();
 
     Settings settings;
