@@ -127,6 +127,12 @@ QVariant HumbleBundleAPI::filesModel(int download)
     return QVariant::fromValue(model);
 }
 
+QVariant HumbleBundleAPI::filterablePurchaseModel()
+{
+    QSortFilterProxyModel *model = db.getFilterablePurchaseModel();
+    return QVariant::fromValue(model);
+}
+
 void HumbleBundleAPI::login()
 {
 	QUrlQuery queryUrl;

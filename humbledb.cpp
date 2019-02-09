@@ -143,3 +143,13 @@ QSqlQueryModel *HumbleDB::getFileModel(int download)
     model->setQuery("SELECT * FROM `File` WHERE File.download = "+QString::number(download),db);
     return model;
 }
+
+QSortFilterProxyModel *HumbleDB::getFilterablePurchaseModel()
+{
+    QSqlDatabase db = QSqlDatabase::database(databaseName);
+    QSqlQueryModel *model = new CustomQueryModel(this);
+    model->setQuery("SELECT * FROM `Purchase`",db);
+    QSortFilterProxyModel *filterModel = new QSortFilterProxyModel(this);
+    filterModel->setSourceModel(model);
+    return filterModel;
+}

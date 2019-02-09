@@ -36,6 +36,16 @@ ApplicationWindow {
                 color: "white"
             }
 
+            TextField {
+                id: filter
+                Layout.alignment: Qt.AlignTop
+                implicitHeight: 39
+                visible: mainViewManger.currentIndex == 2 && HumbleApi.isLoggedIn()
+                onTextChanged: {
+                    pageBundles.filterList(filter.text);
+                }
+            }
+
             ToolButton {
                 text: "‹"
                 Layout.alignment: Qt.AlignTop

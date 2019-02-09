@@ -10,6 +10,7 @@
 #include "db/file.h"
 #include <QList>
 #include "db/customquerymodel.h"
+#include <QSortFilterProxyModel>
 
 class HumbleDB : public QObject
 {
@@ -28,6 +29,7 @@ public:
     QSqlQueryModel *getProductPlatforms(int product);
     QSqlQueryModel *getDownloadModel(int product);
     QSqlQueryModel *getFileModel(int download);
+    QSortFilterProxyModel *getFilterablePurchaseModel();
 
 signals:
     void dbCleared();

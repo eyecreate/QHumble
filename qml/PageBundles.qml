@@ -10,7 +10,7 @@ Rectangle {
         target: HumbleApi
         onOrderListUpdated: {
             pageBundlesRect.loading = false;
-            bundlesList.model = HumbleApi.purchaseModel();
+            bundlesList.model = HumbleApi.filterablePurchaseModel();
         }
     }
 
@@ -26,7 +26,7 @@ Rectangle {
             pageBundlesRect.loading = true;
             HumbleApi.updateOrderList();
         } else {
-            bundlesList.model = HumbleApi.purchaseModel();
+            bundlesList.model = HumbleApi.filterablePurchaseModel();
         }
     }
 
@@ -42,6 +42,12 @@ Rectangle {
         } else {
             return "qrc:/qml/assets/images/platform/all.svg"
         }
+    }
+
+    function filterList(filter) {
+        bundlesList.model.filterKeyColumn = 2;
+        bundlesList.model.filterCaseSensitivity = Qt.CaseInsensitive;
+        bundlesList.model.setFilterFixedString(filter);
     }
 
     Component {
