@@ -31,7 +31,6 @@ ApplicationWindow {
 
             Label {
                 Layout.fillWidth: true
-                text: qsTr("Humble Bundle")
                 font.pixelSize: 20
                 color: "white"
             }
