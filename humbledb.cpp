@@ -91,6 +91,41 @@ int HumbleDB::addFile(File file)
     return query.lastInsertId().toInt();
 }
 
+void HumbleDB::updatePurchase(Purchase purchase)
+{
+    QSqlDatabase db = QSqlDatabase::database(databaseName);
+    QSqlQuery query(db);
+    query.prepare("UPDATE `Purchase` SET type = :type,humanname = :humanname,intname = :intname,humbleid = :humbleid WHERE intname = "+purchase.getIntName());
+    query.bindValue(":type",purchase.getType());
+    query.bindValue(":humanname",purchase.getHumanName());
+    query.bindValue(":intname",purchase.getIntName());
+    query.bindValue(":humbleid",purchase.getHumbleId());
+    query.exec();
+}
+
+void HumbleDB::updateProduct(Product product)
+{
+    QSqlDatabase db = QSqlDatabase::database(databaseName);
+    QSqlQuery query(db);
+    query.prepare("UPDATE `Product` SET intname = :intname,humanname = :humanname,iconurl = :iconurl,purchase = :purchase WHERE intname = "+product.getIntName());
+    query.bindValue(":intname",product.getIntName());
+    query.bindValue(":humanname",product.getHumanName());
+    query.bindValue(":iconurl",product.getIconURL());
+    query.bindValue(":purchase",product.getPurchaseId());
+    query.exec();
+}
+
+void HumbleDB::updateDownload(Download download)
+{
+    QSqlDatabase db = QSqlDatabase::database(databaseName);
+    QSqlQuery query(db);
+    query.prepare("UPDATE `Download` SET intname = :intname,platform = :platform,product = :product WHERE intname = "+download.getIntName());
+    query.bindValue(":intname",download.getIntName());
+    query.bindValue(":platform",download.getPlatform());
+    query.bindValue(":product",download.getProductId());
+    query.exec();
+}
+
 int HumbleDB::getPurchaseCount()
 {
     QSqlDatabase db = QSqlDatabase::database(databaseName);
@@ -102,6 +137,51 @@ int HumbleDB::getPurchaseCount()
         return query.value(0).toInt();
     }
     return 0;
+}
+
+int HumbleDB::purchaseExists(Purchase purchase)
+{
+    QSqlDatabase db = QSqlDatabase::database(databaseName);
+    QSqlQuery query(db);
+    query.prepare("SELECT id FROM `Purchase` WHERE Purchase.intname = '"+purchase.getIntName()+"' AND Purchase.humbleid = '"+purchase.getHumbleId()+"'");
+    query.exec();
+    if(query.next())
+    {
+        return query.value(0).toInt();
+    }
+    return -1;
+}
+
+int HumbleDB::productExists(Product product)
+{
+    QSqlDatabase db = QSqlDatabase::database(databaseName);
+    QSqlQuery query(db);
+    query.prepare("SELECT id FROM `Product` WHERE Product.intname = '"+product.getIntName()+"' AND Product.purchase = "+QString::number(product.getPurchaseId()));
+    query.exec();
+    if(query.next())
+    {
+        return query.value(0).toInt();
+    }
+    return -1;
+}
+
+int HumbleDB::downloadExists(Download download)
+{
+    QSqlDatabase db = QSqlDatabase::database(databaseName);
+    QSqlQuery query(db);
+    query.prepare("SELECT id FROM `Download` WHERE Download.intname = '"+download.getIntName()+"' AND Download.product = '"+QString::number(download.getProductId())+"'");
+    query.exec();
+    if(query.next())
+    {
+        return query.value(0).toInt();
+    }
+    return -1;
+}
+
+void HumbleDB::eraseFilesForDownload(int download)
+{
+    QSqlDatabase db = QSqlDatabase::database(databaseName);
+    db.exec("DELETE FROM `File` WHERE download = "+QString::number(download));
 }
 
 QSqlQueryModel *HumbleDB::getPurchaseModel()

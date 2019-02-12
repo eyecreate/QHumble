@@ -69,7 +69,7 @@ Rectangle {
                     anchors.fill: parent
                     onClicked: {
                         mainViewManger.currentIndex = 3;
-                        pageProducts.changePurchase(id);
+                        pageProducts.changePurchase(id,humbleid);
                     }
                 }
             }

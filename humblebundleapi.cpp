@@ -178,10 +178,8 @@ void HumbleBundleAPI::parseProductList(const QByteArray & json)
 	QJsonDocument jDoc = QJsonDocument::fromJson(json);
 	QJsonObject object = jDoc.object();
 
-    bool newDBEntry = true;
     int lastPurchaseId = -1;
 
-    //TODO: Check if DB entry exists. If so, update, otherwise, add new one.
     Purchase purchase;
 
     purchase.setType(object["product"].toObject()["category"].toString());
@@ -189,17 +187,20 @@ void HumbleBundleAPI::parseProductList(const QByteArray & json)
     purchase.setHumanName(object["product"].toObject()["human_name"].toString());
     purchase.setHumbleId(object["gamekey"].toString());
 
-    if(newDBEntry) lastPurchaseId = db.addPurchase(purchase);
+    lastPurchaseId = db.purchaseExists(purchase);
+    if(lastPurchaseId != -1){
+        db.updatePurchase(purchase);
+    } else {
+        lastPurchaseId = db.addPurchase(purchase);
+    }
 
     //Seperate Purchase into products
 	QJsonArray  subProducts = object["subproducts"].toArray();
 
 	for (int i = 0; i < subProducts.size(); ++i) {
-        bool newProductEntry = true;
         int lastProductId = -1;
         QJsonObject jsonProduct = subProducts[i].toObject();
 
-        //TODO: Check if DB entry exists. If so, update, otherwise, add new one.
         Product product;
 
         product.setIconURL(jsonProduct["icon"].toString());
@@ -212,24 +213,33 @@ void HumbleBundleAPI::parseProductList(const QByteArray & json)
             continue;
         }
 
-        if(newProductEntry) lastProductId = db.addProduct(product);
+        lastProductId = db.productExists(product);
+        if(lastProductId != -1) {
+            db.updateProduct(product);
+        } else {
+            lastProductId = db.addProduct(product);
+        }
 
 		QJsonArray downloadArray = jsonProduct["downloads"].toArray();
 		for (int j = 0; j < downloadArray.size(); ++j) {
-            bool newDownloadEntry = true;
             int lastDownloadId = -1;
             QJsonObject jsonDownload = downloadArray[j].toObject();
 
-            //TODO: Check if DB entry exists. If so, update, otherwise, add new one.
             Download download;
 
             download.setIntName(jsonDownload["machine_name"].toString());
             download.setPlatform(jsonDownload["platform"].toString());
             download.setProductId(lastProductId);
 
-            if(newDownloadEntry) lastDownloadId = db.addDownload(download);
+            lastDownloadId = db.downloadExists(download);
+            if(lastDownloadId != -1) {
+                db.updateDownload(download);
+            } else {
+                lastDownloadId = db.addDownload(download);
+            }
 
             QJsonArray fileArray = jsonDownload["download_struct"].toArray();
+            db.eraseFilesForDownload(lastDownloadId);
             for(int k = 0; k < fileArray.size(); ++k) {
                 QJsonObject jsonFile = fileArray[k].toObject();
                 File file;

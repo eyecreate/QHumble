@@ -6,8 +6,10 @@ Rectangle {
     width: 100
     height: 62
 
-    function changePurchase(purchase) {
+    function changePurchase(purchase,code) {
         productsList.model = HumbleApi.productsModel(purchase);
+        //Now update product links.
+        HumbleApi.updateOrder(code);
     }
 
     function platformIcon(platform) {
