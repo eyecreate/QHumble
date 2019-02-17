@@ -30,8 +30,9 @@ const QString orderUrl           = apiBaseUrl + "order/%1"             ; // %1 i
 
 }
 
-HumbleBundleAPI::HumbleBundleAPI()
+HumbleBundleAPI::HumbleBundleAPI(QApplication *parent)
     :
+      parentApp(parent),
       networkAccessManager_(new QNetworkAccessManager(this)),
       isLoggedIn_(false)
 {
@@ -194,6 +195,8 @@ void HumbleBundleAPI::parseProductList(const QByteArray & json)
         lastPurchaseId = db.addPurchase(purchase);
     }
 
+    parentApp->processEvents();
+
     //Seperate Purchase into products
 	QJsonArray  subProducts = object["subproducts"].toArray();
 
@@ -220,6 +223,8 @@ void HumbleBundleAPI::parseProductList(const QByteArray & json)
             lastProductId = db.addProduct(product);
         }
 
+        parentApp->processEvents();
+
 		QJsonArray downloadArray = jsonProduct["downloads"].toArray();
 		for (int j = 0; j < downloadArray.size(); ++j) {
             int lastDownloadId = -1;
@@ -238,6 +243,8 @@ void HumbleBundleAPI::parseProductList(const QByteArray & json)
                 lastDownloadId = db.addDownload(download);
             }
 
+            parentApp->processEvents();
+
             QJsonArray fileArray = jsonDownload["download_struct"].toArray();
             db.eraseFilesForDownload(lastDownloadId);
             for(int k = 0; k < fileArray.size(); ++k) {
@@ -251,6 +258,8 @@ void HumbleBundleAPI::parseProductList(const QByteArray & json)
                 file.setDownloadId(lastDownloadId);
 
                 db.addFile(file);
+
+                parentApp->processEvents();
             }
 		}
     }

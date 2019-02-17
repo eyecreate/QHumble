@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     QtWebView::initialize();
 
     Settings settings;
-    HumbleBundleAPI hbApi;
+    HumbleBundleAPI hbApi(&app);
 
 	QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("HumbleApi", &hbApi);

@@ -3,6 +3,7 @@
 #include <QObject>
 #include "humbledb.h"
 #include <QSqlQueryModel>
+#include <QApplication>
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -11,7 +12,7 @@ class HumbleBundleAPI : public QObject
 {
     Q_OBJECT
 public:
-    HumbleBundleAPI();
+    HumbleBundleAPI(QApplication *parent);
 
     Q_INVOKABLE void setCredentials(const QString & login, const QString & password, const QString & twoFactor, const QString & reCaptchaResponse);
     Q_INVOKABLE void updateOrderList();
@@ -51,6 +52,7 @@ private:
     QString twoFactor_;
     QString reCaptcha_;
     int refreshCounter = 0;
+    QApplication *parentApp;
 
 	QNetworkAccessManager * networkAccessManager_;
 	bool isLoggedIn_;
